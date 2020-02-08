@@ -19,12 +19,15 @@ RUN apt-get update && \
 # Clean up unnecessary packages
 RUN apt-get autoremove --purge -y
 
+# Set up RubyGems
+RUN gem update && \
+  gem install bundler
+
 # Copy over app
 COPY . /app
 
 # Install Gems
 RUN cd /app/gloom && \
-  gem install bundler && \
   bundle install
 
 # Expose ports

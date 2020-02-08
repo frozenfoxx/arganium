@@ -23,7 +23,7 @@ RUN apt-get autoremove --purge -y
 COPY . /app
 
 # Install Gems
-RUN cd /app/gloom &&
+RUN cd /app/gloom && \
   gem install bundler && \
   bundle install
 

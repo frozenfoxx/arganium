@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= build_title(show_env: true) %></title>
+    <%= csrf_meta_tags %>
+    <%= action_cable_meta_tag %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container-fluid">
+        <img alt="Brand" src="/assets/logo-welcome.png" height="30" width="30" id="brand-image" class="pull-left">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="<%= root_path %>">Gloom</a>
+        </div>
+
+        <ul class="nav navbar-nav">
+          <li class="<%= active_on_nav(/rooms/) %>"> <%= link_to "Control Room", 'rooms' %> </li>
+          <li class="<%= active_on_nav(/scores/) %>"> <%= link_to "Scores", 'scores' %> </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id="main-container" class="container-fluid">
+      <div class="row">
+        <div id="main-content">
+          <div class="well">
+            <%= yield %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </body>
+</html>

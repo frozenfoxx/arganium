@@ -1,0 +1,9 @@
+---
+name:                 "indexing"
+author:               "frozenfoxx"
+flag:                 "{d!r3ct0ry_l!st!ng}"
+points:               "10"
+category:             "web,recon"
+hint:                 "Last place you look"
+description:          >
+  A common web developer mistake.

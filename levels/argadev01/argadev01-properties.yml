@@ -1,0 +1,7 @@
+---
+mapname:   DEV01
+filename:  argadev01.wad
+areas:     2
+par:       600
+hacklifts:
+        50:    'down'

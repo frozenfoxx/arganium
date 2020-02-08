@@ -1,0 +1,9 @@
+---
+mapname:   ARGA02
+filename:  arganium02.wad
+areas:     2
+par:       600
+hacklifts:
+        500:    'down'
+        501:    'down'
+        502:    'down'

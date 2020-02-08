@@ -1,0 +1,19 @@
+<!-- Hacklift Button(s) -->
+<div class="hacklift">
+<% if hacklift.direction == 'up' then %>
+  <button type=button class="btn btn-default" data-behavior="room_raiser" value="<%= hacklift.sector %>">
+    Raise Hacklift
+  </button>
+<% elsif hacklift.direction == 'down' then %>
+  <button type=button class="btn btn-default" data-behavior="room_lower" value="<%= hacklift.sector %>">
+    Lower Hacklift
+  </button>
+<% elsif hacklift.direction == 'both' then %>
+  <button type=button class="btn btn-default" data-behavior="room_raiser" value="<%= hacklift.sector %>">
+    Raise Hacklift
+  </button>
+  <button type=button class="btn btn-default" data-behavior="room_lower" value="<%= hacklift.sector %>">
+    Lower Hacklift
+  </button>
+<% end %>
+</div>

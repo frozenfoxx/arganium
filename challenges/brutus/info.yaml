@@ -1,0 +1,11 @@
+---
+name:                 "brutus"
+author:               "FOXX"
+flag:                 "{drink_your_ovaltine}"
+points:               "10"
+category:             "cryptography"
+hint:                 "Then fall Caesar"
+description:          >
+  A simple cipher hosted in a simple
+  page, displayed directly as a web page.
+

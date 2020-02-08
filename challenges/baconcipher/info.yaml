@@ -1,0 +1,9 @@
+---
+name:                 "baconcipher"
+author:               "sweetgrrl1222"
+flag:                 "{notparanoidenough}"
+points:               "20"
+category:             "cryptography"
+hint:                 "A Francis favorite"
+description:          >
+  A straightforward cipher hosted in plaintext.

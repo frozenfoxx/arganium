@@ -1,0 +1,11 @@
+---
+name:                 "enhance"
+author:               "FOXX"
+flag:                 "{zoom_&_enhance}"
+points:               "20"
+category:             "steganography"
+hint:                 "layers"
+description:          >
+  There is a hidden message within this image.
+  To find it you'll need to "enhance."
+

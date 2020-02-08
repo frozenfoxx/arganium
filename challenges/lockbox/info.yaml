@@ -1,0 +1,10 @@
+---
+name:                 "lockbox"
+author:               "FOXX"
+flag:                 "{th3_s3cr3t_!s_ch33s3}"
+points:               "30"
+category:             "lockpicking"
+hint:                 "On pins and needles"
+description:          >
+  Pick the lock on the box next to you.
+  The code awaits when the pins are raised.

@@ -1,0 +1,9 @@
+---
+name:                 "finetune"
+author:               "sweetgrrl1222"
+flag:                 "{p3nny_w!s3}"
+points:               "15"
+category:             "cryptography"
+hint:                 "Finely tuned cipher"
+description:          >
+  A straightforward cipher hosted in plaintext.

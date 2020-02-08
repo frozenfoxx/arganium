@@ -1,0 +1,123 @@
+#library "arganium"
+#include "zcommon.acs"
+
+// The opening text for players
+script "Arganium Welcome" OPEN net
+{
+        PrintBold(s:"Welcome to Arganium, prepare yourself!");
+        Log(s:"Welcome to Arganium, prepare yourself!");
+}
+
+// Entrance announcement
+script "Arganium EnteredGame" ENTER net
+{
+        Log(n:0, s:" has entered the game.");
+}
+
+// Death announcment
+script "Arganium PlayerDied" DEATH net
+{
+        Log(n:0, s:" has died.");
+}
+
+// End of level stats
+script "Arganium LevelStats" UNLOADING net
+{
+        int timetaken;
+                timetaken = Timer() / 35;
+        int killedmonsters;
+                killedmonsters = GetLevelInfo (LEVELINFO_KILLED_MONSTERS);
+        int numsecrets;
+                numsecrets = GetLevelInfo (LEVELINFO_FOUND_SECRETS);
+        Log(s:"Level stat: time ", d:timetaken);
+        Log(s:"Level stat: kills ", d:killedmonsters);
+        Log(s:"Level stat: secrets ", d:numsecrets);
+        Log(s:"Level stat: end");
+}
+
+// This script allows Hackdoors to function.
+// Hackdoor:  Tag of the sector of the Hackdoor
+script "Arganium OpenHackdoor" (int Hackdoor) net
+{
+        Door_Open(Hackdoor, 10);
+}
+
+// This script allows spawning of enemies at given spawners in a level
+// Spawner:  tag number of the MapSpot (form is: <1-9 for Hackdoor area>1>)
+// MonstType:  spawn number of the monster to spawn
+// MonstID:  normally not used
+script "Arganium SpawnEnemy" (int Spawner, int MonstType, int Fog, int MonstID) net
+{
+        // Set default MonstID to zero if one is not specified
+        if (!MonstID)
+        {
+                MonstID = 0;
+        }
+
+        // Set default Fog to zero if one is not specified
+        if (!Fog)
+        {
+                Fog = 0;
+        }
+
+        Thing_SpawnFacing(Spawner, MonstType, Fog, MonstID);
+}
+
+// This script allows spawning of PowerUps at given spawners in a level
+// Spawner:  tag number of the MapSpot (form is: <1-9 for Hackdoor area>0)
+// PowerUpType:  spawn number of the item to spawn
+script "Arganium SpawnPowerUp" (int Spawner, int PowerUpType) net
+{
+        Thing_SpawnFacing(Spawner, PowerUpType, 0, 999);
+}
+
+// This script allows lowering Hacklifts
+script "Arganium LowerHacklift" (int Hacklift, int Wait) net
+{
+        // Set default Wait to three seconds if one is not specified
+        if (!Wait)
+        {
+                Wait = 90;
+        }
+
+        Plat_DownWaitUpStay(Hacklift, 10, Wait);
+}
+
+// This script allows raising Hacklifts
+script "Arganium RaiseHacklift" (int Hacklift, int Wait) net
+{
+        // Set default Wait to three seconds if one is not specified
+        if (!Wait)
+        {
+                Wait = 90;
+        }
+
+        Plat_UpWaitDownStay(Hacklift, 10, Wait);
+}
+
+// This announces when a Secret is found
+script "Arganium CheckSecrets" OPEN
+{
+        int oldsecretcount;
+        int newsecretcount;
+
+        oldsecretcount = GetLevelInfo(LEVELINFO_FOUND_SECRETS);
+
+        while (newsecretcount <= oldsecretcount)
+        {
+          delay(2);
+          newsecretcount = GetLevelInfo(LEVELINFO_FOUND_SECRETS);
+        }
+
+        PrintBold(s:"Secret found!");
+        Log(s:"Secret found!");
+
+        restart;
+}
+
+// This announces when a Hackswitch has been flipped
+script 1 (int areanum)
+{
+        PrintBold(s:"Area ", d: areanum, s:" Hackswitch activated!");
+        Log(s:"Area ", d: areanum, s:" Hackswitch activated!");
+}

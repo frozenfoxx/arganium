@@ -1,0 +1,10 @@
+---
+name:                 "papersafe"
+author:               "FrozenFOXX"
+flag:                 "{!n_pl@!n_s!ght}"
+points:               "20"
+category:             "steganography"
+hint:                 "Zipped up tight"
+description:          >
+  This safe has a secret, but no combination will open it.
+

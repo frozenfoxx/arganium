@@ -1,0 +1,9 @@
+---
+name:                 "morris"
+author:               "sweetgrrl1222"
+flag:                 "{correcthorsebatterystaple}"
+points:               "20"
+category:             "cryptography"
+hint:                 "Mr. Ed is bad at picking passwords"
+description:          >
+  A straightforward cipher hosted in plaintext.

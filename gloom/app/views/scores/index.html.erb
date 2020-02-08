@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Scores</h1>
+
+<table style="width:100%">
+  <tr>
+    <th>Time</th>
+    <th>Par Time</th>
+    <th>Kills</th>
+    <th>Secrets</th>
+    <th>Challenges</th>
+    <th>Total</th>
+  </tr>
+  <tr>
+    <td>
+      <div id="time"><%= @time -%></div>
+    </td>
+    <td>
+      <div id="partime"><%= @par_time -%></div>
+    </td>
+    <td>
+      <div id="kills"><%= @kills -%></div>
+    </td>
+    <td>
+      <div id="secrets"><%= @secrets -%></div>
+    </td>
+    <td>
+      <div id="challenges"><%= @challenges -%></div>
+    </td>
+    <td>
+      <div id="total"><%= @total -%></div>
+    </td>
+  </tr>
+</table>

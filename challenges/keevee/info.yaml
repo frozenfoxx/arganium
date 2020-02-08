@@ -1,0 +1,9 @@
+---
+name:                 "keevee"
+author:               "sweetgrrl1222"
+flag:                 "{socksforblocks}"
+points:               "25"
+category:             "cryptography"
+hint:                 "Love of foxes"
+description:          >
+  A straightforward cipher hosted in plaintext.

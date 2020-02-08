@@ -1,0 +1,2 @@
+class Hacklift < ApplicationRecord
+end

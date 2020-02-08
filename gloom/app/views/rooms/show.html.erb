@@ -1,0 +1,75 @@
+<% content_for :title, "Control Room" %>
+<h2>Core Challenges</h2>
+<div id="corechallenges">
+  <%= render @corechallenges %>
+</div>
+
+<h2>Edge Challenges</h2>
+<div id="edgechallenges">
+  <%= render @edgechallenges %>
+</div>
+
+<!-- PowerUp Button -->
+<% content_for :sidebar do %>
+  <h2>PowerUp</h2>
+  <div class="powerupButton">
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#powerupModal">
+      Redeem
+    </button>
+  </div>
+
+  <!-- Modal -->
+  <div id="powerupModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+	<div class="modal-header">
+	<h5 class="modal-title" id="powerupModalLabel">PowerUp</h5>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <p><b>Choose PowerUp and target Area</b><br>
+          <div>
+            <form>
+              <label>PowerUp:</label><br>
+              <input type="radio" name="powerup" value="soulsphere">Soulsphere<br>
+              <input type="radio" name="powerup" value="shotgun">Shotgun<br>
+              <input type="radio" name="powerup" value="chaingun">Chaingun<br>
+              <input type="radio" name="powerup" value="rocketlauncher">Rocket Launcher<br>
+              <input type="radio" name="powerup" value="plasmagun">Plasmagun<br>
+              <input type="radio" name="powerup" value="chainsaw">Chainsaw<br>
+              <input type="radio" name="powerup" value="supershotgun">Super Shotgun<br>
+              <input type="radio" name="powerup" value="greenarmor">Green Armor<br>
+              <input type="radio" name="powerup" value="berserk">Berserk<br>
+              <input type="radio" name="powerup" value="invisibility">Invisibility<br>
+              <input type="radio" name="powerup" value="radsuit">Radiation Suit<br>
+              <input type="radio" name="powerup" value="computermap">Computer Map<br>
+              <input type="radio" name="powerup" value="lightamp">Light Amp<br>
+              <input type="radio" name="powerup" value="backpack">Backpack<br>
+              <label>Area:</label><br>
+              <% (1..@areas).each do |a| %>
+              <input type="radio" name="poweruparea" value="<%= a -%>"><%= a -%><br>
+              <% end %>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-behavior="submit_powerup">Submit</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <h2>Hacklifts</h2>
+  <div id="hacklifts">
+    <%= render @hacklifts %>
+  </div>
+
+  <h2>Messages</h2>
+  <div id="messages">
+    <%= render @messages %>
+  </div>
+<% end %>

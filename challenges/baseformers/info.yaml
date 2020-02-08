@@ -1,0 +1,9 @@
+---
+name:                 "baseformers"
+author:               "FOXX"
+flag:                 "{more_than_meets_the_eye}"
+points:               "15"
+category:             "cryptography"
+hint:                 "Numerical transformation"
+description:          >
+  A QR code hides a secret message.

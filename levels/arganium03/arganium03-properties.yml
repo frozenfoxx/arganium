@@ -1,0 +1,10 @@
+---
+mapname:   ARGA03
+filename:  arganium03.wad
+areas:     2
+par:       600
+hacklifts:
+     100: 'up'
+     101: 'down'
+     200: 'down'
+     201: 'up'

@@ -1,0 +1,50 @@
+<!-- Challenge Button -->
+<div class="challengeButton">
+  <% if challenge.solved? %>
+    <button type="button" class="btn btn-success" id="challengeButton<%= challenge.id %>" data-toggle="modal" data-target="#challengeModal<%= challenge.id %>">
+      <%= challenge.name %>, area: <%= challenge.area %>
+    </button>
+  <% elsif challenge.locked? %>
+    <button type="button" class="btn btn-danger" id="challengeButton<%= challenge.id %>" data-toggle="modal" data-target="#challengeModal<%= challenge.id %>">
+      <%= challenge.name %>, area: <%= challenge.area %>
+    </button>
+  <% else %>
+    <button type="button" class="btn btn-primary" id="challengeButton<%= challenge.id %>" data-toggle="modal" data-target="#challengeModal<%= challenge.id %>">
+      <%= challenge.name %>, area: <%= challenge.area %>
+    </button>
+  <% end %>
+</div>
+
+<!-- Modal -->
+<div id="challengeModal<%= challenge.id %>" tabindex="-1" class="modal fade" role="dialog" aria-labelledby="challengeModalLabel<%= challenge.id %>" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+	      <h5 class="modal-title" id="challengeModalLabel<%= challenge.id %>"><%= challenge.name %></h5>
+	      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+           <b>Content:</b> <a href="challenges/<%= challenge.name %>/index.html" target="_blank">Here</a><br>
+           <b>Category:</b> <%= challenge.category %><br>
+           <b>Points:</b> <%= challenge.points %><br>
+           <b>Hint:</b> <%= challenge.hint %>
+        </p>
+        <div>
+          <form>
+            <label>Flag:</label>
+            <input type="text" id="challengeModalInput<%= challenge.id %>" data-behavior="submit_flag" data-challengeid="<%= challenge.id %>"><br>
+          </form>
+          <b>Note:</b> flags are of the form, "<i>{flag_text}</i>." Beware leading/trailing whitespace!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-behavior="submit_flag" data-challengeid="<%= challenge.id %>">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

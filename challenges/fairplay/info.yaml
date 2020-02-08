@@ -1,0 +1,9 @@
+---
+name:                 "fairplay"
+author:               "sweetgrrl1222"
+flag:                 "{nothing_ventured}"
+points:               "10"
+category:             "cryptography"
+hint:                 "No fair"
+description:          >
+  A straightforward cipher hosted in plaintext.

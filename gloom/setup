@@ -1,0 +1,152 @@
+#!/usr/bin/env ruby
+require 'yaml'
+
+# Objects
+class GameConfig
+
+  attr_accessor :name, :mapname, :mapfile, :areas, :par, :numcore, :hacklifts, :core, :edge, :gamewad, :marines, :finishscript
+end
+
+# Functions
+
+# Collect directory entries for a list
+def dirEntries(location)
+  Dir.entries(location).select {|entry| File.directory? File.join(location,entry) and !(entry =='.' || entry == '..') }
+end
+
+# Logic
+
+# Initialize configuration
+hdconfig = GameConfig.new
+
+# Check to see if a config file has been provided
+if ARGV[0] != nil then
+  puts "Checking for configuration file #{ARGV[0]}..."
+
+  # Load config file
+  if File.exists?(ARGV[0]) then
+    hdconfig = YAML::load_file(ARGV[0])
+
+    # Remove old database info
+    Dir.foreach("./db"){|x| if x.chomp =~ /.*\.sqlite3$/ then File.delete("./db/#{x.chomp}") end}
+    puts `rails db:migrate`
+    
+    # Write new database seeds
+    File.delete('./db/seeds.rb')
+    open('./db/seeds.rb', 'a') { |f|
+      f.puts "Option.create(:name => \"gamewad\", :value => \"#{hdconfig.gamewad}\")"
+      f.puts "Option.create(:name => \"marines\", :value => \"#{hdconfig.marines}\")"
+      f.puts "Option.create(:name => \"finishscript\", :value => \"#{hdconfig.finishscript}\")"
+      f.puts "Level.create(:name => \"#{hdconfig.mapname}\", :file => \"#{hdconfig.mapfile}\", :par => \"#{hdconfig.par}\")"
+      f.puts "Score.create(:name => \"time\", :value => 0)"
+      f.puts "Score.create(:name => \"kills\", :value => 0)"
+      f.puts "Score.create(:name => \"secrets\", :value => 0)"
+      f.puts "Score.create(:name => \"challenges\", :value => 0)"
+      f.puts "Score.create(:name => \"total\", :value => 0)"
+      f.puts "Secret.create(:total => \"#{hdconfig.areas}\")"
+
+      for i in 1..hdconfig.areas do
+        f.puts "Hackdoor.create(:sector => \"#{i}\")"
+      end
+
+      hdconfig.hacklifts.each do |lift,dir|
+        f.puts "Hacklift.create(:sector => \"#{lift}\", :direction => \"#{dir}\")"
+      end
+
+      for i in 1..hdconfig.areas do
+        hdconfig.core[(i - 1)].each do |challname|
+          challenge = YAML::load_file("../challenges/#{challname}/info.yaml")
+          f.puts "Challenge.create(:name => \"#{challenge["name"]}\", :area => \"#{i}\", :flag => \"#{challenge["flag"]}\", :category => \"#{challenge["category"]}\", :hint => \"#{challenge["hint"]}\", :points => \"#{challenge["points"]}\")"
+        end
+      end
+
+      hdconfig.edge.each do |challname|
+        challenge = YAML::load_file("../challenges/#{challname}/info.yaml")
+        f.puts "Challenge.create(:name => \"#{challenge["name"]}\", :area => \"0\", :flag => \"#{challenge["flag"]}\", :category => \"#{challenge["category"]}\", :hint => \"#{challenge["hint"]}\", :points => \"0\")"
+      end
+    }
+    puts `rails db:seed`
+  else
+    puts "File not found."
+  end
+
+# Config file not provided
+else
+  # Set the gamewad
+  hdconfig.gamewad = `whiptail --title "Game Wad" --inputbox "Please input the path to the game IWAD file:" 10 40 3>&1 1>&2 2>&3`
+
+  # Set the maximum number of Marines
+  nummarines = [ 1, 2, 3, 4 ]
+  nummarines = nummarines.flat_map { |x| [x, 'player\(s\)'] }
+  hdconfig.marines = `whiptail --title "Number of Marines" --menu "Select desired number of Marine players:" 30 50 20 #{nummarines.join(" ")} 3>&2 2>&1 1>&3`
+
+  # Acquire the levels available and properly format for whiptail
+  levels = dirEntries('../levels')
+  levels = levels.flat_map { |x| [x, "level"] }
+
+  # Level Select
+  levelchoice = `whiptail --title "Level" --menu "Choose level:" 30 50 20 #{levels.join(" ")} 3>&2 2>&1 1>&3`
+  level = YAML.load_file("../levels/#{levelchoice}/#{levelchoice}-properties.yml")
+
+  # Set config values from level
+  hdconfig.mapname   = level['mapname']
+  hdconfig.mapfile   = level['filename']
+  hdconfig.areas     = level['areas']
+  hdconfig.par       = level['par']
+  hdconfig.hacklifts = level['hacklifts'] 
+
+  # Acquire the Challenges available and properly format for whiptail
+  challenges = dirEntries('../challenges')
+  challenges = challenges.flat_map { |x| [x, "challenge"] }
+
+  # Ask the user how many Core Challenges per Area
+  hdconfig.numcore = `whiptail --title "Core Challenges" --menu "How many Core Challenges per Area?" 30 50 20\
+    "1" "One per Area"\
+    "2" "Two per Area"\
+    "3" "Three per Area"\
+    "4" "Four per Area"\
+    "5" "Five per Area" 3>&2 2>&1 1>&3`
+
+  # Determine Core Challenges per Area
+  corechallenges = Array.new(hdconfig.areas.to_i) { Array.new(hdconfig.numcore.to_i, "")}
+  i = 0
+  while i < hdconfig.areas.to_i do
+    hdconfig.numcore.to_i.times do |core|
+      corechallenges[i][core] = `whiptail --title "Core Challenges" --menu "Choose a challenge for Area #{i + 1}" 30 50 20\
+    #{challenges.join(" ")} 3>&2 2>&1 1>&3`
+    end
+
+    i += 1
+  end
+
+  # Determine Edge Challenges
+  edgechallenges = Array.new(hdconfig.areas.to_i) { |x| "" }
+  i = 0
+  while i < hdconfig.areas.to_i do
+    edgechallenges[i] = `whiptail --title "Edge Challenges" --menu "Choose a challenge for Area #{i + 1}" 30 50 20\
+    #{challenges.join(" ")} 3>&2 2>&1 1>&3`
+
+    i += 1
+  end
+
+  # Store Challenges
+  hdconfig.core = corechallenges
+  hdconfig.edge = edgechallenges
+
+  # Set desired finish script
+  hdconfig.finishscript = `whiptail --title "Finish Script (optional)" --inputbox "Please input the path to a script to run upon completion (leave blank if not desired):" 10 40 3>&1 1>&2 2>&3`
+
+  # Supply configuration name
+  hdconfig.name = `whiptail --title "Configuration Name" --inputbox "Please supply a configuration name:" 10 40 3>&1 1>&2 2>&3`
+
+  # Confirm changes with user
+  commit = `whiptail --title "Confirm" --yesno "Commit changes?" 10 30 3>&1 1>&2 2>&3`
+
+  # Store configuration
+  if commit
+    File.open("#{hdconfig.name}.yml", 'w') {|f| f.write hdconfig.to_yaml}
+  else
+    puts "Cancelling setup"
+    exit
+  end
+end

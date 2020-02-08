@@ -5,7 +5,9 @@ FROM ubuntu:18.04
 LABEL maintainer="FrozenFOXX <frozenfoxx@churchoffoxx.net>"
 
 # Variables
-ENV DATAROOT=/data
+ENV DATAROOT="/data" \
+    DOOMWADDIR="/data/wads" \
+    MODE="server"
 
 # Install packages
 RUN apt-get update && \

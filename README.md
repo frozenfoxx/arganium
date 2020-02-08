@@ -46,5 +46,37 @@ To build the Docker container, follow the following steps:
 docker build . -t frozenfoxx/arganium:latest
 ```
 
+## Configure
+
+Before running Arganium the Gloom server will need to be configured for play. You can generate this by running the following:
+
+```
+docker run -it \
+  --rm \
+  -e CONFIG_FILE="/data/configs/config.yml" \
+  -e MODE="setup" \
+  -v /Path/To/Configs:/data/configs \
+  --name=arganium \
+  frozenfoxx/arganium:latest
+```
+
+When completed it will save the configuration file in the mounted location for `/data/configs`.
+
+## Run
+
+The following will run the Arganium Gloom server with the configuration file built in the previous step:
+
+```
+docker run -it \
+  --rm \
+  -e CONFIG_FILE="/data/configs/config.yml" \
+  -p 8080:8080 \
+  -v /Path/To/Configs/:/data/configs \
+  -v /Path/To/WADs/:/data/wads \
+  --name=arganium \
+  frozenfoxx/arganium:latest
+```
+
 # Legal
+
 Arganium is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. Arganium is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.

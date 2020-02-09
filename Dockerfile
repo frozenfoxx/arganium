@@ -22,6 +22,7 @@ RUN apt-get update && \
 
 # Set up RubyGems
 RUN gem update && \
+  gem update --system && \
   gem install bundler
 
 # Copy over app

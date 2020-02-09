@@ -5,6 +5,7 @@ FROM ubuntu:18.04
 LABEL maintainer="FrozenFOXX <frozenfoxx@churchoffoxx.net>"
 
 # Variables
+WORKDIR /app
 ENV DATAROOT="/data" \
     DOOMWADDIR="/data/wads" \
     MODE="server"
@@ -15,11 +16,9 @@ RUN apt-get update && \
     apt-get install -y \
       bash \
       ruby \
+      ruby-dev \
       rubygems \
       whiptail
-
-# Clean up unnecessary packages
-RUN apt-get autoremove --purge -y
 
 # Set up RubyGems
 RUN gem update && \
@@ -31,6 +30,14 @@ COPY . /app
 # Install Gems
 RUN cd /app/gloom && \
   bundle install
+
+# Set up Zandronum
+RUN mkdir -p /root/.config/zandronum
+COPY /app/configs/zandronum.ini /root/.config/zandronum/
+RUN /app/scripts/install_zandronum.sh
+
+# Clean up unnecessary packages
+RUN apt-get autoremove --purge -y
 
 # Expose ports
 EXPOSE 8080

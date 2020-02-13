@@ -30,7 +30,7 @@ COPY . /app
 
 # Install Gems
 RUN cd /app/gloom && \
-  bundle install
+  bundle install --system
 
 # Set up Zandronum
 RUN mkdir -p /root/.config/zandronum

@@ -6,7 +6,7 @@ LABEL maintainer="FrozenFOXX <frozenfoxx@churchoffoxx.net>"
 
 # Variables
 ENV APP_HOME="/app" \
-  BUILD_DEPS="build-essential ruby-dev zlib1g-dev" \
+  BUILD_DEPS="build-essential libgdbm-dev libgdbm-compat-dev libsqlite3-dev libssl-dev ruby-dev zlib1g-dev" \
   DATAROOT="/data" \
   DEBIAN_FRONTEND=noninteractive \
   DOOMWADDIR="/data/wads" \
@@ -19,6 +19,7 @@ RUN apt-get update && \
     apt-get install -y \
       ruby \
       rubygems \
+      sqlite3 \
       whiptail \
       ${BUILD_DEPS}
 

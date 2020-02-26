@@ -6,7 +6,9 @@ LABEL maintainer="FrozenFOXX <frozenfoxx@churchoffoxx.net>"
 
 # Variables
 ENV APP_HOME="/app" \
+  BUILD_DEPS="build-essential ruby-dev zlib1g-dev" \
   DATAROOT="/data" \
+  DEBIAN_FRONTEND=noninteractive \
   DOOMWADDIR="/data/wads" \
   MODE="server"
 WORKDIR ${APP_HOME}
@@ -15,11 +17,10 @@ WORKDIR ${APP_HOME}
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \
-      bash \
       ruby \
-      ruby-dev \
       rubygems \
-      whiptail
+      whiptail \
+      ${BUILD_DEPS}
 
 # Set up RubyGems
 RUN gem update && \
@@ -41,7 +42,9 @@ COPY ${APP_HOME}/configs/zandronum.ini /root/.config/zandronum/
 RUN ${APP_HOME}/scripts/install_zandronum.sh
 
 # Clean up unnecessary packages
-RUN apt-get autoremove --purge -y
+RUN apt-get remove ${BUILD_DEPS} && \
+  apt-get autoremove --purge -y && \
+  rm -rf /var/lib/apt/lists/*
 
 # Expose ports
 EXPOSE 8080

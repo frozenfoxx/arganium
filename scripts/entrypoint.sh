@@ -48,7 +48,7 @@ usage()
   echo "    --config               set the file contents for Gloom configuration (override environment variable if present)"
   echo "    --config_file          specify a file for Gloom configuration (override environment variable if present)"
   echo "    --mode                 set the runmode (override environment variable if present)"
-  echo "  Modes:
+  echo "  Modes:"
   echo "    setup                  run the configurator"
   echo "    server                 run the Gloom server (default if not specified)"
 }
@@ -59,12 +59,16 @@ usage()
 while [[ ${#} > 0 ]]; do
   case $1 in
     --appdir )       APPDIR="$2"
+                     shift
                      ;;
     --config )       CONFIG="$2"
+                     shift
                      ;;
     --config_file )  CONFIG_FILE="$2"
+                     shift
                      ;;
     --mode )         MODE="$2"
+                     shift
                      ;;
     -h | --help )    usage
                      exit 0
@@ -73,6 +77,7 @@ while [[ ${#} > 0 ]]; do
   shift
 done
 
+## Decode base64 variables
 decode_vars
 
 ## Check execution mode

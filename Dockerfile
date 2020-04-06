@@ -6,6 +6,7 @@ LABEL maintainer="FrozenFOXX <frozenfoxx@churchoffoxx.net>"
 
 # Variables
 ENV APP_HOME="/app" \
+  APP_DEPS="ruby rubygems sqlite3 whiptail wget" \
   BUILD_DEPS="build-essential libgdbm-dev libgdbm-compat-dev libsqlite3-dev libssl-dev ruby-dev zlib1g-dev" \
   DATAROOT="/data" \
   DEBIAN_FRONTEND=noninteractive \
@@ -17,10 +18,7 @@ WORKDIR ${APP_HOME}
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \
-      ruby \
-      rubygems \
-      sqlite3 \
-      whiptail \
+      ${APP_DEPS} \
       ${BUILD_DEPS}
 
 # Set up RubyGems
@@ -38,9 +36,9 @@ RUN cd ${APP_HOME}/gloom && \
 COPY . ${APP_HOME}
 
 # Set up Zandronum
-RUN mkdir -p /root/.config/zandronum
-COPY ${APP_HOME}/configs/zandronum.ini /root/.config/zandronum/
-RUN ${APP_HOME}/scripts/install_zandronum.sh
+RUN mkdir -p /root/.config/zandronum && \
+  cp ${APP_HOME}/configs/zandronum.ini /root/.config/zandronum/ && \
+  ${APP_HOME}/scripts/install_zandronum.sh
 
 # Clean up unnecessary packages
 RUN apt-get remove ${BUILD_DEPS} && \
@@ -52,4 +50,3 @@ EXPOSE 8080
 
 # Launch processes
 ENTRYPOINT ["${APP_HOME}/scripts/entrypoint.sh"]
-

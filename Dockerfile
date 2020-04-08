@@ -7,7 +7,7 @@ LABEL maintainer="FrozenFOXX <frozenfoxx@churchoffoxx.net>"
 # Variables
 ENV APP_HOME="/app" \
   APP_DEPS="ruby rubygems sqlite3 whiptail wget" \
-  BUILD_DEPS="build-essential libgdbm-dev libgdbm-compat-dev libsqlite3-dev libssl-dev ruby-dev zlib1g-dev" \
+  BUILD_DEPS="build-essential libgdbm-dev libgdbm-compat-dev libsqlite3-dev libssl-dev ruby-dev software-properties-common zlib1g-dev" \
   DATAROOT="/data" \
   DEBIAN_FRONTEND=noninteractive \
   DOOMWADDIR="/data/wads" \

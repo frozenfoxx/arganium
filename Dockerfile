@@ -41,7 +41,7 @@ RUN mkdir -p /root/.config/zandronum && \
   ${APP_HOME}/scripts/install_zandronum.sh
 
 # Clean up unnecessary packages
-RUN apt-get remove ${BUILD_DEPS} && \
+RUN apt-get remove -y ${BUILD_DEPS} && \
   apt-get autoremove --purge -y && \
   rm -rf /var/lib/apt/lists/*
 

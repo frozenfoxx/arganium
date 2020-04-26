@@ -78,6 +78,7 @@ docker run -it \
   --rm \
   -e CONFIG_FILE="/data/configs/config.yml" \
   -p 8080:8080 \
+  -p 10666:10666 \
   -v /Path/To/Configs/:/data/configs \
   -v /Path/To/WADs/:/data/wads \
   --name=arganium \

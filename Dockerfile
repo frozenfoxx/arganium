@@ -5,14 +5,13 @@ FROM ubuntu:18.04
 LABEL maintainer="FrozenFOXX <frozenfoxx@churchoffoxx.net>"
 
 # Variables
-ENV APP_HOME="/app" \
-  APP_DEPS="ruby rubygems sqlite3 whiptail wget" \
+ENV APP_DEPS="ruby rubygems sqlite3 whiptail wget" \
   BUILD_DEPS="build-essential libgdbm-dev libgdbm-compat-dev libsqlite3-dev libssl-dev ruby-dev software-properties-common zlib1g-dev" \
   DATAROOT="/data" \
   DEBIAN_FRONTEND=noninteractive \
   DOOMWADDIR="/data/wads" \
   MODE="server"
-WORKDIR ${APP_HOME}
+WORKDIR /app
 
 # Install packages
 RUN apt-get update && \
@@ -27,18 +26,18 @@ RUN gem update && \
   gem install bundler
 
 # Install Gems
-COPY ./gloom/Gemfile* ${APP_HOME}/gloom/
-RUN cd ${APP_HOME}/gloom && \
+COPY ./gloom/Gemfile* /app/gloom/
+RUN cd /app/gloom && \
   bundle config set system 'true' && \
   bundle install
 
 # Add source
-COPY . ${APP_HOME}
+COPY . /app/
 
 # Set up Zandronum
 RUN mkdir -p /root/.config/zandronum && \
-  cp ${APP_HOME}/configs/zandronum.ini /root/.config/zandronum/ && \
-  ${APP_HOME}/scripts/install_zandronum.sh
+  cp /app/configs/zandronum.ini /root/.config/zandronum/ && \
+  /app/scripts/install_zandronum.sh
 
 # Clean up unnecessary packages
 RUN apt-get remove -y ${BUILD_DEPS} && \
@@ -46,7 +45,7 @@ RUN apt-get remove -y ${BUILD_DEPS} && \
   rm -rf /var/lib/apt/lists/*
 
 # Expose ports
-EXPOSE 8080
+EXPOSE 8080 10666
 
 # Launch processes
-ENTRYPOINT ["${APP_HOME}/scripts/entrypoint.sh"]
+ENTRYPOINT ["/app/scripts/entrypoint.sh"]

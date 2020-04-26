@@ -10,22 +10,21 @@ end
 # Functions
 
 # Collect directory entries for a list
+# Params:
+# +location+:: location to parse directory entries
 def dirEntries(location)
   Dir.entries(location).select {|entry| File.directory? File.join(location,entry) and !(entry =='.' || entry == '..') }
 end
 
-# Logic
-
-# Initialize configuration
-hdconfig = GameConfig.new
-
-# Check to see if a config file has been provided
-if ARGV[0] != nil then
-  puts "Checking for configuration file #{ARGV[0]}..."
+# Load configuration file
+# Params:
+# +configFile+:: location of a configuration file to load
+def loadConfig(configFile)
+  puts "Checking for configuration file #{configFile}..."
 
   # Load config file
-  if File.exists?(ARGV[0]) then
-    hdconfig = YAML::load_file(ARGV[0])
+  if File.exists?(configFile) then
+    arganiumConfig = YAML::load_file(configFile)
 
     # Remove old database info
     Dir.foreach("./db"){|x| if x.chomp =~ /.*\.sqlite3$/ then File.delete("./db/#{x.chomp}") end}
@@ -34,33 +33,33 @@ if ARGV[0] != nil then
     # Write new database seeds
     File.delete('./db/seeds.rb')
     open('./db/seeds.rb', 'a') { |f|
-      f.puts "Option.create(:name => \"gamewad\", :value => \"#{hdconfig.gamewad}\")"
-      f.puts "Option.create(:name => \"marines\", :value => \"#{hdconfig.marines}\")"
-      f.puts "Option.create(:name => \"finishscript\", :value => \"#{hdconfig.finishscript}\")"
-      f.puts "Level.create(:name => \"#{hdconfig.mapname}\", :file => \"#{hdconfig.mapfile}\", :par => \"#{hdconfig.par}\")"
+      f.puts "Option.create(:name => \"gamewad\", :value => \"#{arganiumConfig.gamewad}\")"
+      f.puts "Option.create(:name => \"marines\", :value => \"#{arganiumConfig.marines}\")"
+      f.puts "Option.create(:name => \"finishscript\", :value => \"#{arganiumConfig.finishscript}\")"
+      f.puts "Level.create(:name => \"#{arganiumConfig.mapname}\", :file => \"#{arganiumConfig.mapfile}\", :par => \"#{arganiumConfig.par}\")"
       f.puts "Score.create(:name => \"time\", :value => 0)"
       f.puts "Score.create(:name => \"kills\", :value => 0)"
       f.puts "Score.create(:name => \"secrets\", :value => 0)"
       f.puts "Score.create(:name => \"challenges\", :value => 0)"
       f.puts "Score.create(:name => \"total\", :value => 0)"
-      f.puts "Secret.create(:total => \"#{hdconfig.areas}\")"
+      f.puts "Secret.create(:total => \"#{arganiumConfig.areas}\")"
 
-      for i in 1..hdconfig.areas do
+      for i in 1..arganiumConfig.areas do
         f.puts "Hackdoor.create(:sector => \"#{i}\")"
       end
 
-      hdconfig.hacklifts.each do |lift,dir|
+      arganiumConfig.hacklifts.each do |lift,dir|
         f.puts "Hacklift.create(:sector => \"#{lift}\", :direction => \"#{dir}\")"
       end
 
-      for i in 1..hdconfig.areas do
-        hdconfig.core[(i - 1)].each do |challname|
+      for i in 1..arganiumConfig.areas do
+        arganiumConfig.core[(i - 1)].each do |challname|
           challenge = YAML::load_file("../challenges/#{challname}/info.yaml")
           f.puts "Challenge.create(:name => \"#{challenge["name"]}\", :area => \"#{i}\", :flag => \"#{challenge["flag"]}\", :category => \"#{challenge["category"]}\", :hint => \"#{challenge["hint"]}\", :points => \"#{challenge["points"]}\")"
         end
       end
 
-      hdconfig.edge.each do |challname|
+      arganiumConfig.edge.each do |challname|
         challenge = YAML::load_file("../challenges/#{challname}/info.yaml")
         f.puts "Challenge.create(:name => \"#{challenge["name"]}\", :area => \"0\", :flag => \"#{challenge["flag"]}\", :category => \"#{challenge["category"]}\", :hint => \"#{challenge["hint"]}\", :points => \"0\")"
       end
@@ -69,16 +68,20 @@ if ARGV[0] != nil then
   else
     puts "File not found."
   end
+end
 
-# Config file not provided
-else
+# Set up configuration file
+def setupConfig()
+  ## Initialize configuration
+  arganiumConfig = GameConfig.new
+
   # Set the gamewad
-  hdconfig.gamewad = `whiptail --title "Game Wad" --inputbox "Please input the path to the game IWAD file:" 10 40 3>&1 1>&2 2>&3`
+  arganiumConfig.gamewad = `whiptail --title "Game Wad" --inputbox "Please input the path to the game IWAD file:" 10 40 3>&1 1>&2 2>&3`
 
   # Set the maximum number of Marines
   nummarines = [ 1, 2, 3, 4 ]
   nummarines = nummarines.flat_map { |x| [x, 'player\(s\)'] }
-  hdconfig.marines = `whiptail --title "Number of Marines" --menu "Select desired number of Marine players:" 30 50 20 #{nummarines.join(" ")} 3>&2 2>&1 1>&3`
+  arganiumConfig.marines = `whiptail --title "Number of Marines" --menu "Select desired number of Marine players:" 30 50 20 #{nummarines.join(" ")} 3>&2 2>&1 1>&3`
 
   # Acquire the levels available and properly format for whiptail
   levels = dirEntries('../levels')
@@ -89,18 +92,18 @@ else
   level = YAML.load_file("../levels/#{levelchoice}/#{levelchoice}-properties.yml")
 
   # Set config values from level
-  hdconfig.mapname   = level['mapname']
-  hdconfig.mapfile   = level['filename']
-  hdconfig.areas     = level['areas']
-  hdconfig.par       = level['par']
-  hdconfig.hacklifts = level['hacklifts'] 
+  arganiumConfig.mapname   = level['mapname']
+  arganiumConfig.mapfile   = level['filename']
+  arganiumConfig.areas     = level['areas']
+  arganiumConfig.par       = level['par']
+  arganiumConfig.hacklifts = level['hacklifts'] 
 
   # Acquire the Challenges available and properly format for whiptail
   challenges = dirEntries('../challenges')
   challenges = challenges.flat_map { |x| [x, "challenge"] }
 
   # Ask the user how many Core Challenges per Area
-  hdconfig.numcore = `whiptail --title "Core Challenges" --menu "How many Core Challenges per Area?" 30 50 20\
+  arganiumConfig.numcore = `whiptail --title "Core Challenges" --menu "How many Core Challenges per Area?" 30 50 20\
     "1" "One per Area"\
     "2" "Two per Area"\
     "3" "Three per Area"\
@@ -108,10 +111,10 @@ else
     "5" "Five per Area" 3>&2 2>&1 1>&3`
 
   # Determine Core Challenges per Area
-  corechallenges = Array.new(hdconfig.areas.to_i) { Array.new(hdconfig.numcore.to_i, "")}
+  corechallenges = Array.new(arganiumConfig.areas.to_i) { Array.new(arganiumConfig.numcore.to_i, "")}
   i = 0
-  while i < hdconfig.areas.to_i do
-    hdconfig.numcore.to_i.times do |core|
+  while i < arganiumConfig.areas.to_i do
+    arganiumConfig.numcore.to_i.times do |core|
       corechallenges[i][core] = `whiptail --title "Core Challenges" --menu "Choose a challenge for Area #{i + 1}" 30 50 20\
     #{challenges.join(" ")} 3>&2 2>&1 1>&3`
     end
@@ -120,9 +123,9 @@ else
   end
 
   # Determine Edge Challenges
-  edgechallenges = Array.new(hdconfig.areas.to_i) { |x| "" }
+  edgechallenges = Array.new(arganiumConfig.areas.to_i) { |x| "" }
   i = 0
-  while i < hdconfig.areas.to_i do
+  while i < arganiumConfig.areas.to_i do
     edgechallenges[i] = `whiptail --title "Edge Challenges" --menu "Choose a challenge for Area #{i + 1}" 30 50 20\
     #{challenges.join(" ")} 3>&2 2>&1 1>&3`
 
@@ -130,23 +133,37 @@ else
   end
 
   # Store Challenges
-  hdconfig.core = corechallenges
-  hdconfig.edge = edgechallenges
+  arganiumConfig.core = corechallenges
+  arganiumConfig.edge = edgechallenges
 
   # Set desired finish script
-  hdconfig.finishscript = `whiptail --title "Finish Script (optional)" --inputbox "Please input the path to a script to run upon completion (leave blank if not desired):" 10 40 3>&1 1>&2 2>&3`
+  arganiumConfig.finishscript = `whiptail --title "Finish Script (optional)" --inputbox "Please input the path to a script to run upon completion (leave blank if not desired):" 10 40 3>&1 1>&2 2>&3`
 
-  # Supply configuration name
-  hdconfig.name = `whiptail --title "Configuration Name" --inputbox "Please supply a configuration name:" 10 40 3>&1 1>&2 2>&3`
+  # Check if CONFIG_FILE has been specified in the environment
+  if ENV["CONFIG_FILE"].nil?
+    # Supply configuration name
+    arganiumConfig.name = `whiptail --title "Configuration Name" --inputbox "Please supply a configuration name:" 10 40 3>&1 1>&2 2>&3`
+  else
+    arganiumConfig.name = ENV["CONFIG_FILE"]
+  end
 
   # Confirm changes with user
   commit = `whiptail --title "Confirm" --yesno "Commit changes?" 10 30 3>&1 1>&2 2>&3`
 
   # Store configuration
   if commit
-    File.open("#{hdconfig.name}.yml", 'w') {|f| f.write hdconfig.to_yaml}
+    File.open("#{arganiumConfig.name}.yml", 'w') {|f| f.write arganiumConfig.to_yaml}
   else
     puts "Cancelling setup"
     exit
   end
+end
+
+# Logic
+
+## Check to see if a config file has been provided
+if ARGV[0] != nil then
+  loadConfig(ARGV[0])
+else
+  setupConfig
 end

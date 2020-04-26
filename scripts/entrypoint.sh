@@ -14,19 +14,26 @@ config_gloom()
 {
   cd ${APPDIR}/gloom
   ./setup
+  echo "Config written to ${CONFIG_FILE}."
 }
 
 ## Remove encoding on variables
 decode_vars()
 {
   if ! [[ -z ${CONFIG} ]]; then
+    echo "Configuration via environment variable detected, decoding..."
+
     CONFIG=$(echo ${CONFIG:-''} | base64 -d)
+    cat ${CONFIG} > /tmp/config.yml
+    CONFIG_FILE='/tmp/config.yml'
+    echo "Configuration written to /tmp/config.yml."
   fi
 }
 
 ## Launch Gloom webserver
 launch_gloom()
 {
+  echo "Starting Gloom with config ${CONFIG_FILE}..."
   cd ${APPDIR}/gloom
   ./setup ${CONFIG_FILE}
   SECRET_KEY_BASE=$(rails secret) rails server -b 0.0.0.0

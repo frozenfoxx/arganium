@@ -36,13 +36,20 @@ Arganium is a cooperative hacking shooter. It blends old-school first person sho
 
 # Docker
 
-This repo contains a Docker image for simpler deployment.
+This repo contains a Docker image for simpler, portable deployment.
 
 ## Build
 
 To build the Docker container, follow the following steps:
 
 ```
+docker build . -t frozenfoxx/arganium:latest
+```
+
+To build with custom challenges (preferred for competition) you'll need to copy your challenges into the tree and build a custom container:
+
+```
+cp -rp [custom challenge dirs] [repo base]/challenges/
 docker build . -t frozenfoxx/arganium:latest
 ```
 
@@ -71,6 +78,19 @@ docker run -it \
   --rm \
   -e CONFIG_FILE="/data/configs/config.yml" \
   -p 8080:8080 \
+  -v /Path/To/Configs/:/data/configs \
+  -v /Path/To/WADs/:/data/wads \
+  --name=arganium \
+  frozenfoxx/arganium:latest
+```
+
+If some challenges are being run out of the container directly (NOT RECOMMENDED) or if you simply need a simpler deployment you may wish to run in `host` mode for networking.
+
+```
+docker run -it \
+  --rm \
+  --network host \
+  -e CONFIG_FILE="/data/configs/config.yml" \
   -v /Path/To/Configs/:/data/configs \
   -v /Path/To/WADs/:/data/wads \
   --name=arganium \

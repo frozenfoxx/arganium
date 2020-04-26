@@ -48,4 +48,4 @@ RUN apt-get remove -y ${BUILD_DEPS} && \
 EXPOSE 8080 10666
 
 # Launch processes
-ENTRYPOINT ["/app/scripts/entrypoint.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]

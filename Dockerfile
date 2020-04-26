@@ -21,8 +21,7 @@ RUN apt-get update && \
       ${BUILD_DEPS}
 
 # Set up RubyGems
-RUN gem update && \
-  gem update --system && \
+RUN gem update --system && \
   gem install bundler
 
 # Install Gems

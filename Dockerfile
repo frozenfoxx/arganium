@@ -12,6 +12,7 @@ ENV APP_HOME="/app" \
   DEBIAN_FRONTEND=noninteractive \
   DOOMWADDIR="/data/wads" \
   MODE="server"
+
 WORKDIR ${APP_HOME}
 
 # Install packages
@@ -26,18 +27,19 @@ RUN gem update --system && \
   gem install bundler
 
 # Install Gems
-COPY ./gloom/Gemfile* /app/gloom/
-RUN cd /app/gloom && \
+COPY ./gloom/Gemfile* ${APP_HOME}/gloom/
+RUN cd ${APP_HOME}/gloom && \
+  bundle update --bundler && \
   bundle config set system 'true' && \
   bundle install
 
 # Add source
-COPY . /app
+COPY . ${APP_HOME}
 
 # Set up Zandronum
 RUN mkdir -p /root/.config/zandronum && \
-  cp /app/configs/zandronum.ini /root/.config/zandronum/ && \
-  /app/scripts/install_zandronum.sh
+  cp ${APP_HOME}/configs/zandronum.ini /root/.config/zandronum/ && \
+  ${APP_HOME}/scripts/install_zandronum.sh
 
 # Clean up unnecessary packages
 RUN apt-get remove -y ${BUILD_DEPS} && \

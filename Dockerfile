@@ -12,7 +12,7 @@ ENV APP_HOME="/app" \
   DEBIAN_FRONTEND=noninteractive \
   DOOMWADDIR="/data/wads" \
   MODE="server"
-WORKDIR ${WORKDIR}
+WORKDIR ${APP_HOME}
 
 # Install packages
 RUN apt-get update && \

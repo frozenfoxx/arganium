@@ -29,6 +29,7 @@ RUN gem update --system && \
 # Install Gems
 COPY ./gloom/Gemfile* ${APP_HOME}/gloom/
 RUN cd ${APP_HOME}/gloom && \
+  bundle install && \
   bundle update --bundler && \
   bundle config set system 'true' && \
   bundle install

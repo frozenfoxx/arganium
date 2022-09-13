@@ -1,4 +1,4 @@
-[![Build Status](https://cloud.drone.io/api/badges/frozenfoxx/arganium/status.svg?ref=refs/heads/main)](https://cloud.drone.io/frozenfoxx/arganium)
+[![Actions Status](https://github.com/frozenfoxx/arganium/workflows/build/badge.svg)](https://github.com/frozenfoxx/arganium/actions)
 
 ![Arganium](/artwork/arganium%20logo-small.png?raw=true "Arganium")
 

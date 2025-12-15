@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/frozenfoxx/arganium/workflows/build/badge.svg)](https://github.com/frozenfoxx/arganium/actions)
+[![Build](https://github.com/frozenfoxx/arganium/actions/workflows/build.yml/badge.svg)](https://github.com/frozenfoxx/arganium/actions/workflows/build.yml)
 
 ![Arganium](/artwork/arganium%20logo-small.png?raw=true "Arganium")
 

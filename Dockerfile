@@ -1,5 +1,5 @@
 # Base image
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 
 # Information
 LABEL maintainer="FrozenFOXX <frozenfoxx@churchoffoxx.net>"

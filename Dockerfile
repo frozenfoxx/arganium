@@ -23,8 +23,7 @@ RUN apt-get update && \
       ${BUILD_DEPS}
 
 # Set up RubyGems
-RUN gem update --system && \
-  gem install bundler
+RUN gem install bundler
 
 # Install Gems
 COPY ./gloom/Gemfile* ${APP_HOME}/gloom/
